@@ -140,7 +140,7 @@ vim.opt.timeoutlen = 300
 
 -- Configure how new splits should be opened
 vim.opt.splitright = true
-vim.opt.splitbelow = false
+vim.opt.splitbelow = true
 
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
@@ -230,7 +230,7 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-
+  'tanvirtin/monokai.nvim',
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
@@ -783,17 +783,19 @@ require('lazy').setup({
   },
 
   { -- You can easily change to a different colorscheme.
+    -- require('monokai').setup {}
     -- Change the name of the colorscheme plugin below, and then
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
     'folke/tokyonight.nvim',
+    -- 'tanvirtin/monokai.nvim', -- MINE
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'tokyonight'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -870,6 +872,41 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
+  -- {
+  --   'akinsho/toggleterm.nvim',
+  --   version = '*',
+  --   opts = function()
+  --     require('toggleterm').setup {
+  --       open_mapping = [[<c-\>]],
+  --       direction = 'float',
+  --       border = 'curved',
+  --     }
+  --   end,
+  -- },
+  {
+    'akinsho/toggleterm.nvim',
+    version = '*',
+    opts = function()
+      require('toggleterm').setup {
+        open_mapping = [[<c-\>]],
+        direction = 'float',
+        border = 'curved',
+      }
+
+      -- Create a function to open a new floating terminal
+      function _G.open_floating_terminal(id)
+        local Terminal = require('toggleterm.terminal').Terminal
+        local term = Terminal:new { id = id, direction = 'float' }
+        term:toggle()
+      end
+
+      -- Key mappings to open different floating terminals
+      vim.api.nvim_set_keymap('n', '<leader>1', '<cmd>lua open_floating_terminal(1)<CR>', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<leader>2', '<cmd>lua open_floating_terminal(2)<CR>', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<leader>3', '<cmd>lua open_floating_terminal(3)<CR>', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<leader>4', '<cmd>lua open_floating_terminal(4)<CR>', { noremap = true, silent = true })
+    end,
+  },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -884,7 +921,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
-  require 'kickstart.plugins.neo-tree',
+  -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
